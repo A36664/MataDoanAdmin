@@ -45,30 +45,33 @@ export default {
   },
   methods: {
     updateCountries(dataTemp) {
-      const promises = dataTemp.ips.map((ip) => {
-        const url = `https://geo.ipify.org/api/v2/country?apiKey=at_HZSu4YiWyrCy8BW7PzibJUtN5j5Ic&ipAddress=${ip}`;
-        return fetch(url)
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("concu",data)
-            return {
-              code: data.location.country.toLowerCase(),
-              name: data.location.region,
-              visits: dataTemp.ips.length,
-              percentage: '60.35%',
-            };
-          })
-          .catch((error) => {
-            console.error('Error fetching IP information:', error);
-            return null;
-          });
-      });
+      if (dataTemp.isActive) {
+        const promises = dataTemp.ips.map((ip) => {
+          const url = `https://geo.ipify.org/api/v2/country?apiKey=at_HZSu4YiWyrCy8BW7PzibJUtN5j5Ic&ipAddress=${ip}`;
+          return fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+              return {
+                code: data.location.country.toLowerCase(),
+                name: data.location.region,
+                visits: dataTemp.ips.length,
+                percentage: '60.35%',
+              };
+            })
+            .catch((error) => {
+              console.error('Error fetching IP information:', error);
+              return null;
+            });
+        });
 
-      Promise.all(promises).then((newCountryData) => {
-        // Filter out any null entries in case of fetch errors
-        const filteredData = newCountryData.filter((entry) => entry !== null);
-        this.countries = [...this.countries, ...filteredData];
-      });
+        Promise.all(promises).then((newCountryData) => {
+          // Filter out any null entries in case of fetch errors
+          const filteredData = newCountryData.filter((entry) => entry !== null);
+          this.countries = [...this.countries, ...filteredData];
+        });
+      }else{
+        this.countries =[];
+      }
     },
   },
   created() {

@@ -103,6 +103,7 @@
       renderMap();
       socket.on("receiveIPs",({ips,isActive})=>{
         const valuesObjectRoot = $('#audience-map').vectorMap('get', 'mapObject').series.regions[0].values;
+        console.log('concu',ips);
         ips.map((ip)=>{
           const url =
             `https://geo.ipify.org/api/v2/country?apiKey=at_HZSu4YiWyrCy8BW7PzibJUtN5j5Ic&ipAddress=${ip}`;
@@ -114,7 +115,6 @@
                 renderMap(valuesObjectRoot,ips.length);
               }
               else{
-                // delete valuesObjectRoot[data.location.country]
                 $('#audience-map').empty();
                 $('#audience-map').vectorMap({
                   map: 'world_mill_en',
